@@ -6,10 +6,10 @@ var dataAccess = require('./data-access')
 var process = require('process') 
 var childArgs = [
   path.join(__dirname, 'getuforeports.js'),
-  'single',
-  '125/S125542.html'
- // 'http://www.nuforc.org/webreports/ndxe201603.html',
-  //'http://www.nuforc.org/webreports/ndxe201602.html',
+  //'single',
+  //'126/S126209.html'
+  //'http://www.nuforc.org/webreports/ndxe201603.html',
+  'http://www.nuforc.org/webreports/ndxe201602.html',
   //'http://www.nuforc.org/webreports/ndxe201601.html',
   //'http://www.nuforc.org/webreports/ndxe201512.html',
   //'http://www.nuforc.org/webreports/ndxe201511.html',
@@ -22,9 +22,12 @@ var opts = {
 
 
 var start = process.hrtime();
-var startCount;
+var startCount = 0;
 dataAccess.ufoReportCount().then(c => {
-    startCount = c.count;
+    if(c && c.count)
+    {
+        startCount = c.count;
+    }
 })
 
 

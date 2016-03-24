@@ -27,7 +27,7 @@ function getReports(){
                     console.log("uforeport",JSON.stringify(data))
                     
                     if(idx == links.length){
-                    //if(idx == 5){
+                    //if(idx == 9){
                         reportIdx++;
                         if(reportIdx == system.args.length){
                             phantom.exit()
@@ -52,7 +52,8 @@ function getReports(){
 }
 if(system.args[1] == "single"){
     getTheData(system.args[2], function(data){
-        console.log(JSON.stringify(data))
+        //console.log(JSON.stringify(data))
+        console.log("uforeport",JSON.stringify(data))
         phantom.exit()
     })    
 }else{
@@ -71,7 +72,7 @@ function getTheData(link, heresTheData){
         });
         
         var data = {
-            id:link.split('.')[0]
+            id:parseInt( link.split('.')[0].split('/').pop().substr(1))
         }
         
         parseRawFromPageData(rawFromPage,data)
@@ -89,14 +90,20 @@ function parseRawFromPageData(rawData, data){
     for (var index = 0; index < fields.length; index++) {
         var field = fields[index];
         var i = field.indexOf(":");
-            
-        data[field.substr(0,i).toLowerCase().trim()] = field.substr(i + 1).trim();
+        var val = field.substr(i + 1).trim();
+        if(val == ''){
+            val = null;
+        }
+        data[field.substr(0,i).toLowerCase().trim()] = val;
     }
     
-    data.occurred = data.occurred.substr(0,data.occurred.indexOf('(')-1);
+    if(data.occurred.indexOf('(') > -1)
+    {
+        data.occurred = data.occurred.substr(0,data.occurred.indexOf('(')-1);
+    }
     data.reported = data.reported.substr(0, data.reported.indexOf(' ')) + data.reported.substr(data.reported.lastIndexOf(' '));
-    data.city = data.location.substr(0, data.location.lastIndexOf(',')).trim();
-    data.state = data.location.substr(data.location.lastIndexOf(',') +1).trim();
+    data.city = data.location.substr(0, data.location.lastIndexOf(',')).trim() ;
+    data.state = data.location.substr(data.location.lastIndexOf(',') +1).trim() || null;
     delete data.location;
     
     data.occurred =dateFormat2( new Date(data.occurred));
@@ -112,11 +119,16 @@ function pad(num){
 }
 
 function dateFormat1(date){
-
+    if(isNaN( date.getDate())) {
+        return null;
+    }
     return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
 }
 
 function dateFormat2(date){
+    if(isNaN( date.getDate())) {
+        return null;
+    }
     return dateFormat1(date) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes())
 }
 

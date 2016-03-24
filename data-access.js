@@ -1,11 +1,11 @@
 var sqlite = require('q-sqlite3');
 var filename = "uforeports.sqlite";
 var createTable = `create table uforeports(
-    id TEXT PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     description TEXT,
-    occurred TEXT,
-    reported TEXT,
-    posted TEXT,
+    occurred DATETIME,
+    reported DATETIME,
+    posted DATE,
     shape TEXT,
     duration TEXT,
     city TEXT,
